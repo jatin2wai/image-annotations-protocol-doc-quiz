@@ -1,0 +1,142 @@
+[
+  {
+    "section": "Image quality",
+    "q": "Which combination of image quality labels is allowed?",
+    "opts": ["Good and Blurry", "Dark and Blurry", "Good and Dark", "Good, Dark, and Blurry"],
+    "ans": 1,
+    "explain": "'Dark' and 'Blurry' can be selected together, but 'Good' cannot be combined with either 'Dark' or 'Blurry'. If 'Good' is selected, the other two are disabled, and vice versa."
+  },
+  {
+    "section": "Image quality",
+    "q": "What is the correct rule when both 'Dark' and 'Blurry' apply to an image?",
+    "opts": ["Select only the more severe of the two", "Select both 'Dark' and 'Blurry'; do not select 'Good'", "Select 'Good' since the overall quality is poor", "Leave Image Quality blank and note it in Additional Information"],
+    "ans": 1,
+    "explain": "Image Quality is multi-select. 'Dark' and 'Blurry' can be selected together. However, 'Good' is mutually exclusive with both — if the image has any quality issue, 'Good' must not be selected."
+  },
+  {
+    "section": "Image type",
+    "q": "An image shows an extreme close-up of a small lesion that fills most of the frame. Which distance category should be selected?",
+    "opts": ["distance-part-plant", "distance-whole-plant", "distance-macro", "distance-multiple-plants"],
+    "ans": 2,
+    "explain": "'distance-macro' is the correct label for extreme close-ups of very small targets — such as a spot, lesion, insect, or egg cluster — that fill most of the frame."
+  },
+  {
+    "section": "Image type",
+    "q": "A photo shows mostly bare soil with a small portion of the plant visible. Which subject type applies?",
+    "opts": ["subject-crop", "subject-invalid", "subject-soil", "distance-field"],
+    "ans": 2,
+    "explain": "'subject-soil' applies when the camera is pointed mostly at the ground and the plant is limited to a minority of the frame."
+  },
+  {
+    "section": "Image type",
+    "q": "An image shows a person's hand holding a plant with visible pest damage. Which image type label must be selected?",
+    "opts": ["subject-crop", "subject-soil", "subject-invalid", "PII"],
+    "ans": 3,
+    "explain": "When a person is present in the image, PII (Personally Identifiable Information) must be selected — regardless of whether a crop is also visible. Hands, people, or any personal identifiers in the frame require the PII label."
+  },
+  {
+    "section": "Image type",
+    "q": "Which image type label should be applied if an image contains someone's GPS coordinates or an ID card photo?",
+    "opts": ["subject-invalid", "PII", "distance-field", "subject-soil"],
+    "ans": 1,
+    "explain": "PII (Personally Identifiable Information) must be selected if the image contains lat-long coordinates, an ID card photograph, car number plate, or any other sensitive personal information — even if a crop is also visible."
+  },
+  {
+    "section": "Crop & issue",
+    "q": "What should an annotator do if the crop in an image is not listed in the crop name options?",
+    "opts": ["Leave the field blank", "Select the most similar crop", "Select 'Others' and enter the crop name in the text box", "Flag the image and skip annotation"],
+    "ans": 2,
+    "explain": "Select 'Others' — a text box will appear where you enter the crop name. The options list will be updated based on this feedback."
+  },
+  {
+    "section": "Crop & issue",
+    "q": "Which issue type should be selected when damage caused by a pest is visible but the pest itself is absent?",
+    "opts": ["Pest", "Disease", "Pest Symptom", "Weed"],
+    "ans": 2,
+    "explain": "'Pest Symptom' covers visible damage caused by a pest (holes in leaves, frass, feeding marks) even when the pest itself is not currently visible in the image."
+  },
+  {
+    "section": "Crop & issue",
+    "q": "If a crop is completely healthy with no visible issues, which combination is correct?",
+    "opts": ["Leave Issue Type blank; write 'Healthy' in Additional Information", "Select 'None (Healthy)' in Issue Type; leave Issue Name blank", "Select 'None (Healthy)' in Issue Type and Issue Name", "Select 'Good' in Image Quality and skip Issue fields"],
+    "ans": 1,
+    "explain": "Select 'None (Healthy)' in Issue Type, and leave Issue Name blank. Issue Type and Issue fields are mutually exclusive with 'None (Healthy)'."
+  },
+  {
+    "section": "Crop & issue",
+    "q": "Multiple issue types can be selected simultaneously when more than one is present in an image.",
+    "opts": ["True", "False"],
+    "ans": 0,
+    "explain": "True. The Issue Type field is multi-select — if a pest and a disease are both visible, both should be selected."
+  },
+  {
+    "section": "Bounding box",
+    "q": "When should separate bounding boxes be drawn instead of one combined box?",
+    "opts": ["When issues are on different crops", "When issues are far apart from each other", "When there are more than two issue types", "When the image is blurry"],
+    "ans": 1,
+    "explain": "Multiple issues can be covered in a single bounding box as long as it doesn't cover the whole image. If issues are far apart, draw individual bounding boxes for each."
+  },
+  {
+    "section": "Bounding box",
+    "q": "What should a bounding box enclose?",
+    "opts": ["The entire plant", "The entire image frame", "The pest, visible lifecycle stage, and damaged part of the plant", "Only the pest or insect body"],
+    "ans": 2,
+    "explain": "Draw the bounding box around the specific region of interest — this includes the pest itself, the visible lifecycle stage, and the damaged part of the plant."
+  },
+  {
+    "section": "Issue stage",
+    "q": "For a disease issue, what are the three stage options available in the Issue Stage field?",
+    "opts": ["Onset, Progression, Severe", "Early, Medium, Late", "Mild, Moderate, Critical", "Initial, Active, Terminal"],
+    "ans": 1,
+    "explain": "For disease issues, the three Issue Stage options defined in the protocol are Early, Medium, and Late."
+  },
+  {
+    "section": "Issue stage",
+    "q": "When annotating an image with multiple instances of the same issue, how should Issue Stage be handled?",
+    "opts": ["Fill Issue Stage once per issue type", "Leave Issue Stage blank when the same issue appears more than once", "Select the stage for each instance, even if it is the same issue appearing multiple times", "Select only the most severe stage observed"],
+    "ans": 2,
+    "explain": "Issue Stage must be selected for each issue found in the image, even when there are multiple instances of the same issue. Every occurrence must be individually staged."
+  },
+  {
+    "section": "Issue name",
+    "q": "Which statement about the Issue Name field is correct?",
+    "opts": ["It is a separate field for each issue type (pests, diseases, weeds each have their own)", "It is a single unified field combining pest names, disease names, deficiency types, and weed names", "It only appears when 'Pest' or 'Disease' is selected in Issue Type", "It is optional and can be left blank if Issue Type is filled"],
+    "ans": 1,
+    "explain": "Issue Name is a single unified field that combines all issue categories — pest names, disease names, nutrient deficiency types, and weed names — into one list. The options shown depend on what was selected in Issue Type."
+  },
+  {
+    "section": "Issue name",
+    "q": "What is the correct approach when an annotator selects 'Others' in the Issue Name field?",
+    "opts": ["Leave the text box blank and flag it to the coordinator", "Use only standardised names from the approved list — 'Others' cannot be selected", "Write the exact name of the issue in the text box that appears alongside the 'Others' option", "Skip Issue Stage and Issue Region for that bounding box"],
+    "ans": 2,
+    "explain": "When 'Others' is selected in Issue Name, a text box appears immediately below or beside it. The annotator must write the exact name of the issue there. This also applies when the name is not available in the options list."
+  },
+  {
+    "section": "Issue region",
+    "q": "Which fields must always be filled together whenever any issue exists in an image?",
+    "opts": ["Image Quality and Image Type", "Issue Type, Issue Name, and Issue Region", "Bounding Box and Additional Information", "Issue Stage and Crop Name"],
+    "ans": 1,
+    "explain": "Issue Region must be filled in conjunction with Issue Type and Issue Name. If any issue exists, the affected plant part must also be identified — these three fields are interdependent."
+  },
+  {
+    "section": "Additional information",
+    "q": "Which of these should be noted in the Additional Information field?",
+    "opts": ["The crop name selected", "The number of bounding boxes drawn", "An image that appears to be a screenshot rather than a direct capture", "The annotator's name"],
+    "ans": 2,
+    "explain": "Additional Information should capture unusual observations: watermarks, screenshots, multiple crops in one frame, or obstructions. Standard annotation data (crop name, bounding boxes) belongs in the dedicated fields."
+  },
+  {
+    "section": "Additional information",
+    "q": "When is the Additional Information field mandatory?",
+    "opts": ["Always — it must be filled for every image", "Only when 'Others' is selected in Issue Name", "It is never mandatory but should always be filled if anything unusual is observed", "Only when the image quality is Dark or Blurry"],
+    "ans": 2,
+    "explain": "Additional Information is marked as not mandatory (No) in the protocol. However, annotators must always fill it if anything unusual is observed — even if it seems minor."
+  },
+  {
+    "section": "General rules",
+    "q": "'Issue Name' should be left blank only when which condition is met?",
+    "opts": ["The image quality is Dark or Blurry", "Issue Type is 'None (Healthy)'", "The crop is not listed in the options", "The image contains PII"],
+    "ans": 1,
+    "explain": "Leave Issue Name blank only if Issue Type = None (Healthy). In all other cases, specific issue names must be selected for every issue present."
+  }
+]
