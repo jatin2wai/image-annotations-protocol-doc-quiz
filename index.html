@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Image Annotations Protocol — Quiz</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --bg-secondary: #f5f5f3;
+    --bg-tertiary: #eeede9;
+    --text-primary: #1a1a19;
+    --text-secondary: #6b6b68;
+    --border: rgba(0,0,0,0.12);
+    --border-hover: rgba(0,0,0,0.25);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --green-fill: #E1F5EE;
+    --green-border: #5DCAA5;
+    --green-text: #085041;
+    --green-btn: #1D9E75;
+    --green-btn-hover: #0F6E56;
+    --red-fill: #FCEBEB;
+    --red-border: #F09595;
+    --red-text: #501313;
+    --amber-fill: #FAEEDA;
+    --amber-text: #633806;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a;
+      --bg-secondary: #262624;
+      --bg-tertiary: #2e2e2b;
+      --text-primary: #f0efe8;
+      --text-secondary: #9a9994;
+      --border: rgba(255,255,255,0.1);
+      --border-hover: rgba(255,255,255,0.22);
+      --green-fill: #04342C;
+      --green-border: #0F6E56;
+      --green-text: #9FE1CB;
+      --green-btn: #1D9E75;
+      --green-btn-hover: #5DCAA5;
+      --red-fill: #501313;
+      --red-border: #A32D2D;
+      --red-text: #F7C1C1;
+      --amber-fill: #412402;
+      --amber-text: #FAC775;
+    }
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 2rem 1rem 4rem;
+  }
+
+  .wrap {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .site-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .site-header .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    background: var(--green-fill);
+    color: var(--green-text);
+    border: 1px solid var(--green-border);
+    border-radius: 999px;
+    padding: 4px 14px;
+    margin-bottom: 12px;
+  }
+
+  .site-header h1 {
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .site-header p {
+    font-size: 15px;
+    color: var(--text-secondary);
+  }
+
+  .progress-wrap {
+    background: var(--bg-secondary);
+    border-radius: 999px;
+    height: 6px;
+    margin: 1.5rem 0 0.4rem;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--green-btn);
+    transition: width 0.4s ease;
+  }
+
+  .progress-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-align: right;
+    margin-bottom: 1.5rem;
+  }
+
+  .question-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .q-meta {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+  }
+
+  .q-text {
+    font-size: 17px;
+    color: var(--text-primary);
+    line-height: 1.55;
+    margin-bottom: 1.5rem;
+    font-weight: 400;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    background: var(--bg);
+    transition: background 0.15s, border-color 0.15s;
+    text-align: left;
+    width: 100%;
+    font-family: var(--font);
+  }
+
+  .opt:hover:not(:disabled) {
+    background: var(--bg-secondary);
+    border-color: var(--border-hover);
+  }
+
+  .opt:disabled { cursor: default; }
+
+  .opt.selected { border-color: var(--green-btn); background: var(--green-fill); }
+  .opt.correct  { border-color: var(--green-border); background: var(--green-fill); }
+  .opt.wrong    { border-color: var(--red-border); background: var(--red-fill); }
+  .opt.dimmed   { opacity: 0.4; }
+
+  .opt-letter {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    min-width: 20px;
+    margin-top: 1px;
+  }
+
+  .opt.selected .opt-letter,
+  .opt.correct  .opt-letter { color: var(--green-text); }
+  .opt.wrong    .opt-letter { color: var(--red-text); }
+
+  .opt-text {
+    font-size: 14px;
+    color: var(--text-primary);
+    line-height: 1.55;
+  }
+
+  .opt.correct .opt-text { color: var(--green-text); }
+  .opt.wrong   .opt-text { color: var(--red-text); }
+
+  .feedback {
+    margin-top: 1rem;
+    padding: 12px 16px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    line-height: 1.6;
+    display: none;
+  }
+
+  .feedback.show { display: block; }
+  .feedback.correct { background: var(--green-fill); color: var(--green-text); border: 1px solid var(--green-border); }
+  .feedback.wrong   { background: var(--red-fill);   color: var(--red-text);   border: 1px solid var(--red-border);   }
+
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.25rem;
+    gap: 12px;
+  }
+
+  .btn {
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-hover);
+    background: var(--bg);
+    color: var(--text-primary);
+    cursor: pointer;
+    font-family: var(--font);
+    transition: background 0.15s;
+  }
+
+  .btn:hover:not(:disabled) { background: var(--bg-secondary); }
+  .btn:disabled { opacity: 0.35; cursor: default; }
+
+  .btn.primary {
+    background: var(--green-btn);
+    color: #fff;
+    border-color: var(--green-btn-hover);
+  }
+  .btn.primary:hover:not(:disabled) { background: var(--green-btn-hover); }
+
+  /* Score view */
+  .score-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem 2rem;
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .score-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.25rem;
+    font-size: 30px;
+    font-weight: 600;
+  }
+
+  .score-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+  }
+
+  .score-sub {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+  }
+
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 2rem;
+  }
+
+  .summary-cell {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+  }
+
+  .summary-num {
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .summary-lbl {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 3px;
+  }
+
+  .section-divider {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin-bottom: 1.25rem;
+  }
+
+  .review-item {
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .review-item.correct { background: var(--green-fill); border: 1px solid var(--green-border); }
+  .review-item.wrong   { background: var(--red-fill);   border: 1px solid var(--red-border);   }
+
+  .review-meta { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 8px; }
+  .review-item.correct .review-meta { color: var(--green-text); }
+  .review-item.wrong   .review-meta { color: var(--red-text); }
+
+  .review-q { font-size: 14px; color: var(--text-primary); margin-bottom: 10px; line-height: 1.5; }
+  .review-wrong-ans { font-size: 13px; margin-bottom: 4px; }
+  .review-item.wrong .review-wrong-ans { color: var(--red-text); }
+
+  .review-correct-ans { font-size: 13px; margin-bottom: 10px; }
+  .review-item.correct .review-correct-ans { color: var(--green-text); }
+  .review-item.wrong   .review-correct-ans { color: var(--red-text); }
+
+  .review-explain { font-size: 13px; line-height: 1.6; padding-top: 10px; }
+  .review-item.correct .review-explain { color: var(--green-text); border-top: 1px solid var(--green-border); }
+  .review-item.wrong   .review-explain { color: var(--red-text);   border-top: 1px solid var(--red-border);   }
+
+  .footer {
+    text-align: center;
+    margin-top: 3rem;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 520px) {
+    .site-header h1 { font-size: 20px; }
+    .q-text { font-size: 15px; }
+    .summary-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .summary-num { font-size: 22px; }
+    .question-card { padding: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="site-header">
+    <div class="badge">Knowledge check</div>
+    <h1>Image Annotations Protocol</h1>
+    <p>Quiz for crop image dataset annotators — PDSA &amp; Garuda models</p>
+  </header>
+
+  <!-- Quiz view -->
+  <div id="quiz-view">
+    <div class="progress-wrap">
+      <div class="progress-bar" id="progress-bar" style="width:0%"></div>
+    </div>
+    <div class="progress-label" id="progress-label">Question 1 of 20</div>
+
+    <div id="question-container"></div>
+
+    <div class="nav">
+      <button class="btn" id="prev-btn" onclick="goTo(current-1)" disabled>← Previous</button>
+      <button class="btn primary" id="next-btn" disabled>Next →</button>
+    </div>
+  </div>
+
+  <!-- Score view -->
+  <div id="score-view" style="display:none">
+    <div class="score-card">
+      <div class="score-circle" id="score-circle"></div>
+      <div class="score-title" id="score-title"></div>
+      <div class="score-sub" id="score-sub"></div>
+      <div class="summary-grid">
+        <div class="summary-cell">
+          <div class="summary-num" id="s-correct"></div>
+          <div class="summary-lbl">Correct</div>
+        </div>
+        <div class="summary-cell">
+          <div class="summary-num" id="s-wrong"></div>
+          <div class="summary-lbl">Wrong</div>
+        </div>
+        <div class="summary-cell">
+          <div class="summary-num" id="s-total"></div>
+          <div class="summary-lbl">Total</div>
+        </div>
+      </div>
+      <button class="btn primary" onclick="restart()" style="padding:12px 36px;font-size:15px;">Retake quiz</button>
+    </div>
+
+    <div class="section-divider">Review all answers</div>
+    <div id="review-container"></div>
+  </div>
+
+  <div class="footer">Image Annotations Protocol Quiz &nbsp;·&nbsp; PDSA &amp; Garuda crop image datasets</div>
+</div>
+
+<script>
+const questions = [
+  {
+    section: "Image quality",
+    q: "Which combination of image quality labels is allowed?",
+    opts: ["Good and Blurry", "Dark and Blurry", "Good and Dark", "Good, Dark, and Blurry"],
+    ans: 1,
+    explain: "'Dark' and 'Blurry' can be selected together, but 'Good' cannot be combined with either 'Dark' or 'Blurry'. If 'Good' is selected, the other two are disabled, and vice versa."
+  },
+  {
+    section: "Image quality",
+    q: "What is the correct rule when both 'Dark' and 'Blurry' apply to an image?",
+    opts: ["Select only the more severe of the two", "Select both 'Dark' and 'Blurry'; do not select 'Good'", "Select 'Good' since the overall quality is poor", "Leave Image Quality blank and note it in Additional Information"],
+    ans: 1,
+    explain: "Image Quality is multi-select. 'Dark' and 'Blurry' can be selected together. However, 'Good' is mutually exclusive with both — if the image has any quality issue, 'Good' must not be selected."
+  },
+  {
+    section: "Image type",
+    q: "An image shows an extreme close-up of a small lesion that fills most of the frame. Which distance category should be selected?",
+    opts: ["distance-part-plant", "distance-whole-plant", "distance-macro", "distance-multiple-plants"],
+    ans: 2,
+    explain: "'distance-macro' is the correct label for extreme close-ups of very small targets — such as a spot, lesion, insect, or egg cluster — that fill most of the frame."
+  },
+  {
+    section: "Image type",
+    q: "A photo shows mostly bare soil with a small portion of the plant visible. Which subject type applies?",
+    opts: ["subject-crop", "subject-invalid", "subject-soil", "distance-field"],
+    ans: 2,
+    explain: "'subject-soil' applies when the camera is pointed mostly at the ground and the plant is limited to a minority of the frame. It triggers a UI prompt: 'Focus on the plant, not the soil.'"
+  },
+  {
+    section: "Image type",
+    q: "An image shows a person's hand holding a plant with visible pest damage. Which image type label must be selected?",
+    opts: ["subject-crop", "subject-soil", "subject-invalid", "PII"],
+    ans: 3,
+    explain: "When a person is present in the image, PII (Personally Identifiable Information) must be selected — regardless of whether a crop is also visible. Hands, people, or any personal identifiers in the frame require the PII label."
+  },
+  {
+    section: "Image type",
+    q: "Which image type label should be applied if an image contains someone's GPS coordinates or an ID card photo?",
+    opts: ["subject-invalid", "PII", "distance-field", "subject-soil"],
+    ans: 1,
+    explain: "PII (Personally Identifiable Information) must be selected if the image contains lat-long coordinates, an ID card photograph, car number plate, or any other sensitive personal information — even if a crop is also visible."
+  },
+  {
+    section: "Crop & issue",
+    q: "What should an annotator do if the crop in an image is not listed in the crop name options?",
+    opts: ["Leave the field blank", "Select the most similar crop", "Select 'Others' and enter the crop name in the text box", "Flag the image and skip annotation"],
+    ans: 2,
+    explain: "Select 'Others' — a text box will appear where you enter the crop name. The options list will be updated based on this feedback."
+  },
+  {
+    section: "Crop & issue",
+    q: "Which issue type should be selected when damage caused by a pest is visible but the pest itself is absent?",
+    opts: ["Pest", "Disease", "Pest Symptom", "Weed"],
+    ans: 2,
+    explain: "'Pest Symptom' covers visible damage caused by a pest (holes in leaves, frass, feeding marks) even when the pest itself is not currently visible in the image."
+  },
+  {
+    section: "Crop & issue",
+    q: "If a crop is completely healthy with no visible issues, which combination is correct?",
+    opts: ["Leave Issue Type blank; write 'Healthy' in Additional Information", "Select 'None (Healthy)' in Issue Type; leave Issue Name blank", "Select 'None (Healthy)' in Issue Type and Issue Name", "Select 'Good' in Image Quality and skip Issue fields"],
+    ans: 1,
+    explain: "Select 'None (Healthy)' in Issue Type, and leave Issue Name blank. Issue Type and Issue fields are mutually exclusive with 'None (Healthy)'."
+  },
+  {
+    section: "Crop & issue",
+    q: "Multiple issue types can be selected simultaneously when more than one is present in an image.",
+    opts: ["True", "False"],
+    ans: 0,
+    explain: "True. The Issue Type field is multi-select — if a pest and a disease are both visible, both should be selected."
+  },
+  {
+    section: "Bounding box",
+    q: "When should separate bounding boxes be drawn instead of one combined box?",
+    opts: ["When issues are on different crops", "When issues are far apart from each other", "When there are more than two issue types", "When the image is blurry"],
+    ans: 1,
+    explain: "Multiple issues can be covered in a single bounding box as long as it doesn't cover the whole image. If issues are far apart, draw individual bounding boxes for each."
+  },
+  {
+    section: "Bounding box",
+    q: "What should a bounding box enclose?",
+    opts: ["The entire plant", "The entire image frame", "The pest, visible lifecycle stage, and damaged part of the plant", "Only the pest or insect body"],
+    ans: 2,
+    explain: "Draw the bounding box around the specific region of interest — this includes the pest itself, the visible lifecycle stage, and the damaged part of the plant."
+  },
+  {
+    section: "Issue stage",
+    q: "For a disease issue, what are the three stage options available in the Issue Stage field?",
+    opts: ["Onset, Progression, Severe", "Early, Medium, Late", "Mild, Moderate, Critical", "Initial, Active, Terminal"],
+    ans: 1,
+    explain: "For disease issues, the three Issue Stage options defined in the protocol are Early, Medium, and Late."
+  },
+  {
+    section: "Issue stage",
+    q: "When annotating an image with multiple instances of the same issue, how should Issue Stage be handled?",
+    opts: ["Fill Issue Stage once per issue type", "Leave Issue Stage blank when the same issue appears more than once", "Select the stage for each instance, even if it is the same issue appearing multiple times", "Select only the most severe stage observed"],
+    ans: 2,
+    explain: "Issue Stage must be selected for each issue found in the image, even when there are multiple instances of the same issue. Every occurrence must be individually staged."
+  },
+  {
+    section: "Issue name",
+    q: "Which statement about the Issue Name field is correct?",
+    opts: ["It is a separate field for each issue type (pests, diseases, weeds each have their own)", "It is a single unified field combining pest names, disease names, deficiency types, and weed names", "It only appears when 'Pest' or 'Disease' is selected in Issue Type", "It is optional and can be left blank if Issue Type is filled"],
+    ans: 1,
+    explain: "Issue Name is a single unified field that combines all issue categories — pest names, disease names, nutrient deficiency types, and weed names — into one list. The options shown depend on what was selected in Issue Type."
+  },
+  {
+    section: "Issue name",
+    q: "What is the correct approach when an annotator selects 'Others' in the Issue Name field?",
+    opts: ["Leave the text box blank and flag it to the coordinator", "Use only standardised names from the approved list — 'Others' cannot be selected", "Write the exact name of the issue in the text box that appears alongside the 'Others' option", "Skip Issue Stage and Issue Region for that bounding box"],
+    ans: 2,
+    explain: "When 'Others' is selected in Issue Name, a text box appears immediately below or beside it. The annotator must write the exact name of the issue there. This also applies when the name is not available in the options list."
+  },
+  {
+    section: "Issue region",
+    q: "Which fields must always be filled together whenever any issue exists in an image?",
+    opts: ["Image Quality and Image Type", "Issue Type, Issue Name, and Issue Region", "Bounding Box and Additional Information", "Issue Stage and Crop Name"],
+    ans: 1,
+    explain: "Issue Region must be filled in conjunction with Issue Type and Issue Name. If any issue exists, the affected plant part must also be identified — these three fields are interdependent."
+  },
+  {
+    section: "Additional information",
+    q: "Which of these should be noted in the Additional Information field?",
+    opts: ["The crop name selected", "The number of bounding boxes drawn", "An image that appears to be a screenshot rather than a direct capture", "The annotator's name"],
+    ans: 2,
+    explain: "Additional Information should capture unusual observations: watermarks, screenshots, multiple crops in one frame, or obstructions. Standard annotation data (crop name, bounding boxes) belongs in the dedicated fields."
+  },
+  {
+    section: "Additional information",
+    q: "When is the Additional Information field mandatory?",
+    opts: ["Always — it must be filled for every image", "Only when 'Others' is selected in Issue Name", "It is never mandatory but should always be filled if anything unusual is observed", "Only when the image quality is Dark or Blurry"],
+    ans: 2,
+    explain: "Additional Information is marked as not mandatory (No) in the protocol. However, annotators must always fill it if anything unusual is observed — even if it seems minor. It is the right place to note watermarks, screenshots, obstructions, or multiple crops in a single frame."
+  },
+  {
+    section: "General rules",
+    q: "'Issue Name' should be left blank only when which condition is met?",
+    opts: ["The image quality is Dark or Blurry", "Issue Type is 'None (Healthy)'", "The crop is not listed in the options", "The image contains PII"],
+    ans: 1,
+    explain: "Leave Issue Name blank only if Issue Type = None (Healthy). In all other cases, specific issue names must be selected for every issue present."
+  }
+];
+
+// --- shuffle helpers ---
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// Build a shuffled quiz deck each time:
+// each entry = { q, opts (shuffled), correctOptIndex }
+function buildDeck() {
+  return shuffleArray(questions).map(q => {
+    const correctText = q.opts[q.ans];
+    const shuffledOpts = shuffleArray(q.opts);
+    return {
+      section: q.section,
+      q: q.q,
+      opts: shuffledOpts,
+      ans: shuffledOpts.indexOf(correctText),
+      explain: q.explain
+    };
+  });
+}
+
+let deck    = buildDeck();
+let current = 0;
+let answers = Array(deck.length).fill(null);
+let locked  = Array(deck.length).fill(false);
+
+function render() {
+  const q = deck[current];
+  const letters = ['A','B','C','D','E'];
+  const isLocked = locked[current];
+  const chosen   = answers[current];
+
+  let html = `<div class="question-card">
+    <div class="q-meta">Section: ${q.section} &nbsp;·&nbsp; Question ${current+1} of ${deck.length}</div>
+    <div class="q-text">${q.q}</div>
+    <div class="options">`;
+
+  q.opts.forEach((opt, i) => {
+    let cls = 'opt';
+    if (isLocked) {
+      if (i === q.ans)       cls += ' correct';
+      else if (i === chosen) cls += ' wrong';
+      else                   cls += ' dimmed';
+    } else if (chosen === i) {
+      cls += ' selected';
+    }
+    const disabled = isLocked ? 'disabled' : '';
+    html += `<button class="${cls}" ${disabled} onclick="choose(${i})">
+      <span class="opt-letter">${letters[i]}</span>
+      <span class="opt-text">${opt}</span>
+    </button>`;
+  });
+
+  html += `</div>`;
+
+  if (isLocked) {
+    const isCorrect = chosen === q.ans;
+    html += `<div class="feedback ${isCorrect ? 'correct' : 'wrong'} show">
+      <strong>${isCorrect ? 'Correct.' : `Incorrect. The right answer is ${letters[q.ans]}: ${q.opts[q.ans]}.`}</strong>
+      ${q.explain}
+    </div>`;
+  }
+
+  html += `</div>`;
+  document.getElementById('question-container').innerHTML = html;
+
+  const pct = Math.round((current + 1) / deck.length * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = `Question ${current+1} of ${deck.length}`;
+  document.getElementById('prev-btn').disabled = current === 0;
+
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.disabled = !isLocked;
+
+  if (current === deck.length - 1) {
+    nextBtn.textContent = 'Finish quiz';
+    nextBtn.onclick = finish;
+  } else {
+    nextBtn.textContent = 'Next →';
+    nextBtn.onclick = () => goTo(current + 1);
+  }
+}
+
+function choose(i) {
+  if (locked[current]) return;
+  answers[current] = i;
+  locked[current]  = true;
+  render();
+}
+
+function goTo(n) {
+  if (n < 0 || n >= deck.length) return;
+  current = n;
+  render();
+}
+
+function finish() {
+  const correct = answers.reduce((sum, a, i) => sum + (a === deck[i].ans ? 1 : 0), 0);
+  const total   = deck.length;
+  const pct     = Math.round(correct / total * 100);
+
+  document.getElementById('quiz-view').style.display  = 'none';
+  document.getElementById('score-view').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  const circle = document.getElementById('score-circle');
+  if (pct >= 80) {
+    circle.style.background = 'var(--green-fill)';
+    circle.style.color = 'var(--green-text)';
+  } else if (pct >= 60) {
+    circle.style.background = 'var(--amber-fill)';
+    circle.style.color = 'var(--amber-text)';
+  } else {
+    circle.style.background = 'var(--red-fill)';
+    circle.style.color = 'var(--red-text)';
+  }
+  circle.textContent = pct + '%';
+
+  document.getElementById('score-title').textContent =
+    pct >= 80 ? 'Great work!' : pct >= 60 ? 'Good effort' : 'Keep practising';
+  document.getElementById('score-sub').textContent =
+    `You answered ${correct} out of ${total} questions correctly.`;
+  document.getElementById('s-correct').textContent = correct;
+  document.getElementById('s-wrong').textContent   = total - correct;
+  document.getElementById('s-total').textContent   = total;
+
+  const letters = ['A','B','C','D','E'];
+  let reviewHtml = '';
+  deck.forEach((q, i) => {
+    const isCorrect = answers[i] === q.ans;
+    const cls = isCorrect ? 'correct' : 'wrong';
+    reviewHtml += `<div class="review-item ${cls}">
+      <div class="review-meta">${q.section} · Q${i+1} · ${isCorrect ? '✓ Correct' : '✗ Incorrect'}</div>
+      <div class="review-q">${q.q}</div>
+      ${!isCorrect
+        ? `<div class="review-wrong-ans">Your answer: ${answers[i] !== null ? letters[answers[i]] + ': ' + q.opts[answers[i]] : 'Not answered'}</div>`
+        : ''}
+      <div class="review-correct-ans">Correct answer: ${letters[q.ans]}: ${q.opts[q.ans]}</div>
+      <div class="review-explain">${q.explain}</div>
+    </div>`;
+  });
+  document.getElementById('review-container').innerHTML = reviewHtml;
+}
+
+function restart() {
+  deck    = buildDeck();
+  answers = Array(deck.length).fill(null);
+  locked  = Array(deck.length).fill(false);
+  current = 0;
+  document.getElementById('score-view').style.display = 'none';
+  document.getElementById('quiz-view').style.display  = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
