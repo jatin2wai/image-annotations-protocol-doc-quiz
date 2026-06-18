@@ -211,7 +211,8 @@ function shuffleArray(arr) {
 }
 
 function buildDeck() {
-  return shuffleArray(questions).map(q => {
+  const selected = shuffleArray(questions).slice(0, 20);
+  return selected.map(q => {
     const correctText = q.opts[q.ans];
     const shuffledOpts = shuffleArray(q.opts);
     return {
