@@ -138,5 +138,117 @@
     "opts": ["The image quality is Dark or Blurry", "Issue Type is 'None (Healthy)'", "The crop is not listed in the options", "The image contains PII"],
     "ans": 1,
     "explain": "Leave Issue Name blank only if Issue Type = None (Healthy). In all other cases, specific issue names must be selected for every issue present."
+  },
+  {
+    "section": "Image capture — quality",
+    "q": "At what zoom level should images be captured according to the protocol?",
+    "opts": ["2x for better detail", "Default 1x zoom", "Any zoom level as long as the issue is visible", "3x or higher to fill the frame with the affected area"],
+    "ans": 1,
+    "explain": "Images must be captured at the default 1x zoom level. Changing the zoom introduces inconsistencies that make it harder for the model to learn correctly."
+  },
+  {
+    "section": "Image capture — quality",
+    "q": "In which orientation should all crop images be captured?",
+    "opts": ["Landscape (phone held horizontally)", "Portrait (phone held vertically)", "Either orientation is acceptable", "Depends on the crop being photographed"],
+    "ans": 1,
+    "explain": "All images must be captured in portrait format — holding the mobile phone vertically. This is a mandatory requirement of the image capture protocol."
+  },
+  {
+    "section": "Image capture — quality",
+    "q": "Why should flash or artificial lighting never be used when capturing crop images?",
+    "opts": ["It drains the phone battery too quickly", "It creates glare, shadows, and unnatural colour tones that can distort visual symptoms of pests and diseases", "It makes the image file size too large for upload", "It overexposes the image and makes annotation harder"],
+    "ans": 1,
+    "explain": "Flash creates glare, shadows, and unnatural colour tones which distort the key visual symptoms of pests and diseases. Images should always be captured in natural daylight."
+  },
+  {
+    "section": "Image capture — quality",
+    "q": "What should a user do if lighting conditions in the field are poor?",
+    "opts": ["Use the phone torch to illuminate the affected area", "Switch to a higher ISO setting in the camera", "Wait for better lighting conditions rather than using flash or artificial light", "Capture the image anyway and flag it in Additional Information"],
+    "ans": 2,
+    "explain": "The protocol is clear: if lighting is poor, wait for better conditions. Using flash or artificial lighting distorts visual symptoms and reduces image quality for model training."
+  },
+  {
+    "section": "Image capture — quality",
+    "q": "Why are long-shot images discouraged even when an agricultural expert can identify the issue from them?",
+    "opts": ["Long-shot images take up more storage space", "They cause intra-class variability that biases the model toward predicting all long-shot images as a single class", "Long-shot images cannot be annotated with bounding boxes", "They are automatically rejected by the upload system"],
+    "ans": 1,
+    "explain": "Intra-class variability between long and close-shot images causes the model to become biased — for example, predicting all long-shot images as Brown Plant Hopper regardless of the actual issue. Close-shot images are always required."
+  },
+  {
+    "section": "Image capture — quality",
+    "q": "Why should manual camera settings like ISO, focus, and exposure be avoided?",
+    "opts": ["They are not available on most mobile phones", "Manually changing settings introduces inconsistencies in image quality that make it harder for the model to learn correctly", "They increase image file size beyond the upload limit", "They cause the camera app to crash on older devices"],
+    "ans": 1,
+    "explain": "Manually adjusting settings like ISO, focus, or exposure introduces inconsistencies across images, which disrupts model training. The camera should always be left on its default auto settings."
+  },
+  {
+    "section": "Image capture — quality",
+    "q": "What is the effect of having too many leaves, plants, or background distractions in a single image?",
+    "opts": ["It improves dataset diversity", "It allows the model to learn from a wider context", "It introduces noisy artefacts that allow the model to capture biases rather than focusing on the actual issue", "It has no effect on model training"],
+    "ans": 2,
+    "explain": "The presence of noisy artefacts and irrelevant background elements causes the model to capture nuanced biases rather than focusing on the highlighted issue. The affected plant part should fill most of the frame."
+  },
+  {
+    "section": "Image capture — quality",
+    "q": "Why should images not be captured in burst mode?",
+    "opts": ["Burst mode reduces image resolution", "Burst mode captures 5–10 nearly identical frames, resulting in duplicate images that will be rejected by the de-duplication model", "Burst mode uses more mobile data during upload", "Burst mode is not supported by the annotation tool"],
+    "ans": 1,
+    "explain": "Burst mode captures multiple nearly identical frames in a second, creating duplicate images. The image de-duplication model will reject these, reducing the effective dataset size."
+  },
+  {
+    "section": "Image capture — diversity",
+    "q": "What is the maximum recommended number of images to capture per scene?",
+    "opts": ["One image per scene", "No more than two images per scene", "Up to five images per scene", "As many as needed to document the issue fully"],
+    "ans": 1,
+    "explain": "The protocol recommends capturing no more than two images per scene. The de-duplication model will reject multiple images from the same scene as duplicates."
+  },
+  {
+    "section": "Image capture — diversity",
+    "q": "Which of the following qualifies as a duplicate image?",
+    "opts": ["Two images of different leaves on the same plant", "Two images of the same leaf taken from different angles on different days", "Multiple shots of the same leaf from the same angle and position with no visible difference", "Images of the same crop variety taken on different farms"],
+    "ans": 2,
+    "explain": "Duplicate images are photos that look the same or nearly the same — taken from the same angle, of the same leaf or area, with little to no visible difference. This includes burst-mode captures and re-clicks of the same shot."
+  },
+  {
+    "section": "Image capture — diversity",
+    "q": "Why should different life stages of pests and symptoms be captured?",
+    "opts": ["To meet a minimum image count requirement", "To build a more comprehensive dataset that improves the model's ability to detect issues across various stages", "To reduce the number of annotation labels needed", "Life stage does not affect model training"],
+    "ans": 1,
+    "explain": "Capturing different life stages of crops, pests, and symptoms helps build a more comprehensive dataset, improving the model's ability to detect issues accurately across various stages of development."
+  },
+  {
+    "section": "Image capture — diversity",
+    "q": "Which pest life stages should be prioritised when capturing images?",
+    "opts": ["The most recently observed stage only", "The adult stage only, as it is easiest to identify", "Harmful pest life stages should be prioritised", "All life stages are equally important; no prioritisation needed"],
+    "ans": 2,
+    "explain": "The protocol explicitly states that harmful pest life stages should be prioritised when capturing images, as these are most critical for model training and field diagnosis."
+  },
+  {
+    "section": "Image capture — don'ts",
+    "q": "Why should old or recycled images from the phone gallery not be submitted?",
+    "opts": ["They are usually lower resolution than fresh captures", "Old images may not represent the current crop condition and reduce the reliability of the dataset", "The upload system can detect and block gallery images automatically", "Gallery images are typically in the wrong file format"],
+    "ans": 1,
+    "explain": "Old images may not reflect the current crop condition. The protocol requires fresh images captured directly from the field visit to ensure the dataset is accurate and up to date."
+  },
+  {
+    "section": "Image capture — don'ts",
+    "q": "Why should watermarks on images be avoided?",
+    "opts": ["Watermarks increase file size beyond upload limits", "Watermarks can obstruct important visual details and interfere with model training or manual annotation", "Watermarks make the image appear blurry", "The annotation tool cannot process images with watermarks"],
+    "ans": 1,
+    "explain": "Watermarks (brand logos, device names, timestamps) obstruct key visual details in the image and interfere with both manual annotation and model training. Watermark settings should be turned off in the camera app before capturing."
+  },
+  {
+    "section": "Image capture — don'ts",
+    "q": "What is the correct practice to avoid cluttered images?",
+    "opts": ["Use a wider shot to show the full context of the affected area", "Centre the image on the affected plant part and minimise surrounding noise like soil, tools, and other plants", "Capture the image from above to reduce background distractions", "Include nearby plants to provide context for the model"],
+    "ans": 1,
+    "explain": "The image should be centred on the affected plant part with minimal surrounding noise. Hands, tools, human shadows, and irrelevant background elements should all be excluded from the frame."
+  },
+  {
+    "section": "Image capture — don'ts",
+    "q": "Why should images not be captured from too far away?",
+    "opts": ["Wide shots consume more storage space", "Symptoms or pests may become unclear or lost in wider shots, making annotation and model training harder", "The annotation tool does not support long-shot images", "Far-away images are automatically classified as duplicates"],
+    "ans": 1,
+    "explain": "Capturing images from too far away makes symptoms and pests unclear or invisible. The main issue should fill a large part of the frame. Users should move closer to the affected leaf, stem, or fruit."
   }
 ]
